@@ -38,7 +38,7 @@ public:
     }
 };
 
-template <class T>
+template <typename T>
 class Creator
 {
 public:
@@ -48,7 +48,7 @@ public:
 
 // DerivedCreator is Creator<BaseType> which creates a 
 // DerivedType, not a Creator<DerivedType>
-template <class DerivedType, class BaseType>
+template <typename DerivedType, typename BaseType>
 class DerivedCreator : public Creator<BaseType>
 {
 public:
@@ -58,16 +58,16 @@ public:
     }
 };
 
-template <class T, class Key>
+template <typename T, typename Key>
 class Factory
 {
 public:
-    void Register(Key Id, Creator<T>* Fn)
+    void reg(Key Id, Creator<T>* Fn)
     {
         FunctionMap[Id] = Fn;
     }
 
-    T* Create(Key Id)
+    T* create(Key Id)
     {
         return FunctionMap[Id]->Create();
     }
@@ -88,22 +88,22 @@ private:
 int main(int argc, char ** argv) {
     // Register
     Factory<Model, std::string> temp;
-    temp.Register("DA", new DerivedCreator<ModelA, Model>);
-    temp.Register("DB", new DerivedCreator<ModelB, Model>);
+    temp.reg("ModelA", new DerivedCreator<ModelA, Model>);
+    temp.reg("ModelB", new DerivedCreator<ModelB, Model>);
 
     //Pointer to base interface
     Model * pBase = 0;
 
     //Create and call
-    pBase = temp.Create("DA");
+    pBase = temp.create("ModelA");
     cout << "DerivedA " << pBase->Get() << endl;
     delete pBase;
 
     //Create and call
-    pBase = temp.Create("DB");
+    pBase = temp.create("ModelB");
     cout << "DerivedB " << pBase->Get() << endl;
     delete pBase;
 
- return 0;
+    return 0;
 }
 
