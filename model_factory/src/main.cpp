@@ -17,24 +17,32 @@ public:
     Model(){}
     virtual ~Model() {}
 
-    virtual bool Get() = 0;
+    virtual bool getBool() = 0;
+    
+    virtual void test() = 0;
 };
 
 class ModelA : public Model
 {
 public:
-    bool Get()
-    {
+    bool getBool() {
         return true;
+    }
+    
+    void test() {
+        cout << "ModelA" << endl;
     }
 };
 
 class ModelB : public Model
 {
 public:
-    bool Get()
-    {
+    bool getBool() {
         return false;
+    }
+    
+    void test() {
+        cout << "ModelB" << endl;
     }
 };
 
@@ -71,7 +79,7 @@ public:
     {
         return FunctionMap[Id]->Create();
     }
-
+ 
     ~Factory()
     {
         typename std::map<Key, Creator<T>*>::iterator i = FunctionMap.begin();
@@ -96,12 +104,14 @@ int main(int argc, char ** argv) {
 
     //Create and call
     pBase = temp.create("ModelA");
-    cout << "DerivedA " << pBase->Get() << endl;
+    cout << "DerivedA " << pBase->getBool() << endl;
+    pBase->test();
     delete pBase;
 
     //Create and call
     pBase = temp.create("ModelB");
-    cout << "DerivedB " << pBase->Get() << endl;
+    cout << "DerivedB " << pBase->getBool() << endl;
+    pBase->test();
     delete pBase;
 
     return 0;
