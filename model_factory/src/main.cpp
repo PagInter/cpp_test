@@ -89,21 +89,21 @@ private:
 
 int main(int argc, char ** argv) {
     // Register
-    Factory<std::string, Model> temp;
-    temp.reg("ModelA", new DerivedCreator<ModelA, Model>);
-    temp.reg("ModelB", new DerivedCreator<ModelB, Model>);
+    Factory<std::string, Model> modelFactory;
+    modelFactory.reg("ModelA", new DerivedCreator<ModelA, Model>);
+    modelFactory.reg("ModelB", new DerivedCreator<ModelB, Model>);
 
     //Pointer to base interface
-    Model * pBase = 0;
+    Model * pBase = nullptr;
 
     //Create and call
-    pBase = temp.create("ModelA");
+    pBase = modelFactory.create("ModelA");
     cout << "DerivedA " << pBase->get_bool() << endl;
     pBase->test();
     delete pBase;
 
     //Create and call
-    pBase = temp.create("ModelB");
+    pBase = modelFactory.create("ModelB");
     cout << "DerivedB " << pBase->get_bool() << endl;
     pBase->test();
     delete pBase;
