@@ -67,24 +67,24 @@ class Factory
 {
 public:
     void reg(Key Id, Creator<T>* Fn) {
-        FunctionMap[Id] = Fn;
+        _m_function_map[Id] = Fn;
     }
 
     T * create(Key Id) {
-        return FunctionMap[Id]->add_model_type();
+        return _m_function_map[Id]->add_model_type();
     }
  
     ~Factory() {
         //typename std::map<Key, Creator<T>*>::iterator i = FunctionMap.begin();
-        auto i = FunctionMap.begin();
-        while (i != FunctionMap.end()) {
+        auto i = _m_function_map.begin();
+        while (i != _m_function_map.end()) {
             delete (*i).second;
             ++i;
         }
     }
     
 private:
-    std::map<Key, Creator<T>*> FunctionMap;
+    std::map<Key, Creator<T>*> _m_function_map;
 };
 
 int main(int argc, char ** argv) {
