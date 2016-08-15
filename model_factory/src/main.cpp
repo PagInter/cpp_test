@@ -11,21 +11,19 @@
 using namespace std;
 
 
-class Model
-{
+class Model {
 public:
     Model(){}
     virtual ~Model() {}
 
-    virtual bool getBool() = 0;
+    virtual bool get_bool() = 0;
     
     virtual void test() = 0;
 };
 
-class ModelA : public Model
-{
+class ModelA : public Model {
 public:
-    bool getBool() {
+    bool get_bool() {
         return true;
     }
     
@@ -34,10 +32,9 @@ public:
     }
 };
 
-class ModelB : public Model
-{
+class ModelB : public Model {
 public:
-    bool getBool() {
+    bool get_bool() {
         return false;
     }
     
@@ -51,7 +48,7 @@ class Creator
 {
 public:
     virtual ~Creator(){}
-    virtual T* Create() = 0;
+    virtual T * add_model_type() = 0;
 };
 
 // DerivedCreator is Creator<BaseType> which creates a 
@@ -60,42 +57,39 @@ template <typename DerivedType, typename BaseType>
 class DerivedCreator : public Creator<BaseType>
 {
 public:
-    BaseType* Create()
-    {
+    BaseType * add_model_type() {
         return new DerivedType;
     }
 };
 
-template <typename T, typename Key>
+template <typename Key, typename T>
 class Factory
 {
 public:
-    void reg(Key Id, Creator<T>* Fn)
-    {
+    void reg(Key Id, Creator<T>* Fn) {
         FunctionMap[Id] = Fn;
     }
 
-    T* create(Key Id)
-    {
-        return FunctionMap[Id]->Create();
+    T * create(Key Id) {
+        return FunctionMap[Id]->add_model_type();
     }
  
-    ~Factory()
-    {
-        typename std::map<Key, Creator<T>*>::iterator i = FunctionMap.begin();
-        while (i != FunctionMap.end())
-        {
+    ~Factory() {
+        //typename std::map<Key, Creator<T>*>::iterator i = FunctionMap.begin();
+        auto i = FunctionMap.begin();
+        while (i != FunctionMap.end()) {
             delete (*i).second;
             ++i;
         }
     }
+    
 private:
     std::map<Key, Creator<T>*> FunctionMap;
 };
 
 int main(int argc, char ** argv) {
     // Register
-    Factory<Model, std::string> temp;
+    Factory<std::string, Model> temp;
     temp.reg("ModelA", new DerivedCreator<ModelA, Model>);
     temp.reg("ModelB", new DerivedCreator<ModelB, Model>);
 
@@ -104,13 +98,13 @@ int main(int argc, char ** argv) {
 
     //Create and call
     pBase = temp.create("ModelA");
-    cout << "DerivedA " << pBase->getBool() << endl;
+    cout << "DerivedA " << pBase->get_bool() << endl;
     pBase->test();
     delete pBase;
 
     //Create and call
     pBase = temp.create("ModelB");
-    cout << "DerivedB " << pBase->getBool() << endl;
+    cout << "DerivedB " << pBase->get_bool() << endl;
     pBase->test();
     delete pBase;
 
