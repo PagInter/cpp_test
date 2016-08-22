@@ -48,7 +48,7 @@ class Creator
 {
 public:
     virtual ~Creator(){}
-    virtual T * add_model_type() = 0;
+    virtual T * create_derived_model() = 0;
 };
 
 // DerivedCreator is Creator<BaseType> which creates a 
@@ -57,7 +57,7 @@ template <typename DerivedType, typename BaseType>
 class DerivedCreator : public Creator<BaseType>
 {
 public:
-    BaseType * add_model_type() {
+    BaseType * create_derived_model() {
         return new DerivedType;
     }
 };
@@ -71,7 +71,7 @@ public:
     }
 
     T * create(Key Id) {
-        return _m_function_map[Id]->add_model_type();
+        return _m_function_map[Id]->create_derived_model();
     }
  
     ~Factory() {
